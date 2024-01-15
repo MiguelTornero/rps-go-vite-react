@@ -4,6 +4,7 @@ import { AddIcon } from "@chakra-ui/icons"
 
 import logo from "@/assets/logo.svg"
 import github_logo from "@/assets/github_logo.svg"
+import { ChangeEventHandler, FormEventHandler, useState } from "react";
 
 const NavBar = () => (
 <Container maxWidth={"container.xl"}>
@@ -20,7 +21,14 @@ const NavBar = () => (
 </Container>
 )
 
-export default function Root() {
+export default function Root() {    
+    const [gameId, setGameId] = useState("")
+
+    const handleInputChange : ChangeEventHandler<HTMLInputElement> = (e) => {
+        const newGameId = e.currentTarget.value.trim().toUpperCase()
+        setGameId(newGameId)
+    }
+
     return <>
     <Box bgGradient={"linear(to-tr, blue.50, cyan.500)"}>
         <NavBar/>
@@ -32,11 +40,11 @@ export default function Root() {
                 <Text fontSize={"xl"}>Play Rock-Paper-Scissors with your friends, no matter where you are!</Text>
             </GridItem>
             <GridItem>
-                <Form method="GET" action="/join_game">
+                <Form method="GET" action="/game">
                     <Box>
                     <Stack spacing={4} bg={"white"} padding={4} borderRadius={4}>
                         <Text as={"h2"} fontSize={"2xl"} textAlign={"center"} fontWeight={"bold"} my={2}>Connect to a game</Text>
-                        <Input name="gameId" required placeholder="Code"/>
+                        <Input name="gameId" required placeholder="Code" onChange={handleInputChange} value={gameId}/>
                         <Button colorScheme="blue" variant={"solid"} type="submit">Connect</Button>
                     </Stack>
                     </Box>
