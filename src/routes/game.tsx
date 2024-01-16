@@ -1,5 +1,5 @@
 import Conditional from "@/components/conditional"
-import { AbsoluteCenter, Box, Button, Container, Grid, Show, SimpleGrid, Spinner } from "@chakra-ui/react"
+import { Box, Container, Grid, Spinner } from "@chakra-ui/react"
 import { useState } from "react"
 import { useSearchParams } from "react-router-dom"
 
@@ -19,7 +19,8 @@ export default function  Game() {
         </Box>
     </Conditional>
     <Container maxW={"container.xl"}>
-        id: {gameId}
+        id: {gameId} <br/>
+        backend: {(new URL(import.meta.env.VITE_BACKEND_BASE + "")).toString()}
     </Container>
     </>
 }

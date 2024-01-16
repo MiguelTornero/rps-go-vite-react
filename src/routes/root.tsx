@@ -4,7 +4,7 @@ import { AddIcon } from "@chakra-ui/icons"
 
 import logo from "@/assets/logo.svg"
 import github_logo from "@/assets/github_logo.svg"
-import { ChangeEventHandler, FormEventHandler, useState } from "react";
+import { ChangeEventHandler, useState } from "react";
 
 const NavBar = () => (
 <Container maxWidth={"container.xl"}>
