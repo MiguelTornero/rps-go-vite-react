@@ -1,17 +1,25 @@
+import { connectURL } from "@/backend"
 import Conditional from "@/components/conditional"
-import { Box, Container, Grid, Spinner } from "@chakra-ui/react"
-import { useState } from "react"
-import { useSearchParams } from "react-router-dom"
+import { Box, Button, Container, Grid, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner } from "@chakra-ui/react"
+import { Link, redirect, useSearchParams } from "react-router-dom"
+import useWebSocket from "react-use-websocket"
 
 export default function  Game() {
     const [params] = useSearchParams()
-    const [isLoading] = useState(true)
-
-
-    const gameId = params.get("gameId") || ""
-
+    const url = connectURL + "?" + params.toString()
+    const {readyState, lastMessage} = useWebSocket(url)
     return <>
-    <Conditional show={isLoading}>
+    <Modal isOpen={readyState == WebSocket.CLOSED} onClose={() => redirect("/")}>
+        <ModalOverlay/>
+        <ModalContent>
+            <ModalHeader>Connection closed</ModalHeader>
+            <ModalBody>Make sure you have to correct connection code</ModalBody>
+            <ModalFooter>
+                <Link to={"/"}><Button>Return</Button></Link>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+    <Conditional show={readyState != WebSocket.OPEN}>
         <Box position={"fixed"} top={0} bottom={0} left={0} right={0} bg={"blackAlpha.500"}>
             <Grid placeItems={"center"} h={"100vh"}>
                 <Spinner color="gray.300"/>
@@ -19,8 +27,8 @@ export default function  Game() {
         </Box>
     </Conditional>
     <Container maxW={"container.xl"}>
-        id: {gameId} <br/>
-        backend: {(new URL(import.meta.env.VITE_BACKEND_BASE + "")).toString()}
+        Connect code: {params.get("gameId")}
+        {typeof lastMessage?.data}
     </Container>
     </>
 }
