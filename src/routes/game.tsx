@@ -7,7 +7,7 @@ import useWebSocket from "react-use-websocket"
 export default function  Game() {
     const [params] = useSearchParams()
     const url = connectURL + "?" + params.toString()
-    const {readyState, lastMessage} = useWebSocket(url)
+    const {readyState} = useWebSocket(url, {onMessage: (e) => console.log(e.data)})
     return <>
     <Modal isOpen={readyState == WebSocket.CLOSED} onClose={() => redirect("/")}>
         <ModalOverlay/>
@@ -28,7 +28,6 @@ export default function  Game() {
     </Conditional>
     <Container maxW={"container.xl"}>
         Connect code: {params.get("gameId")}
-        {typeof lastMessage?.data}
     </Container>
     </>
 }
