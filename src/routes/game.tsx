@@ -1,6 +1,6 @@
 import { connectURL } from "@/backend"
 import Conditional from "@/components/conditional"
-import { Box, Button, Container, Grid, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner } from "@chakra-ui/react"
+import { Box, Button, Container, Grid, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text } from "@chakra-ui/react"
 import { useState } from "react"
 import { Link, redirect, useSearchParams } from "react-router-dom"
 import useWebSocket from "react-use-websocket"
@@ -18,7 +18,7 @@ export default function  Game() {
         })
     }, onClose: (e) => setErrMsg(e.reason)})
     return <>
-    <Modal isOpen={!!errMsg} onClose={() => redirect("/")}>
+    <Modal isOpen={false && !!errMsg} onClose={() => redirect("/")}>
         <ModalOverlay/>
         <ModalContent>
             <ModalHeader>Connection closed</ModalHeader>
@@ -28,16 +28,19 @@ export default function  Game() {
             </ModalFooter>
         </ModalContent>
     </Modal>
-    <Conditional show={readyState != WebSocket.OPEN}>
+    <Conditional show={false && readyState != WebSocket.OPEN}>
         <Box position={"fixed"} top={0} bottom={0} left={0} right={0} bg={"blackAlpha.500"}>
             <Grid placeItems={"center"} h={"100vh"}>
                 <Spinner color="gray.300"/>
             </Grid>
         </Box>
     </Conditional>
-    <Container maxW={"container.xl"}>
+    <Container maxW={"container.md"} height={"100vh"}>
+        <Box height={"80%"}>
         Connect code: {params.get("gameId")}
-        {msgLog.map((v, i) => <div key={i}>{v}</div>)}
+        {msgLog.map((v, i) => <Text key={i} >{v}</Text>)}
+        </Box>
+        <Box height={"20%"}>A</Box>
     </Container>
     </>
 }
