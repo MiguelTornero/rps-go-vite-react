@@ -1,16 +1,18 @@
 import { connectURL } from "@/backend"
 import Conditional from "@/components/conditional"
-import { Box, Button, Container, Grid, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text } from "@chakra-ui/react"
+import MoveButton from "@/components/move_button"
+import { Box, Button, Container, Flex, Grid, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text } from "@chakra-ui/react"
 import { useState } from "react"
 import { Link, redirect, useSearchParams } from "react-router-dom"
 import useWebSocket from "react-use-websocket"
 
 export default function  Game() {
+    const [disabled, setDisabled] = useState(false)
     const [params] = useSearchParams()
     const url = connectURL + "?" + params.toString()
     const [errMsg, setErrMsg] = useState("")
-    const [msgLog, setMsgLog] = useState<string[]>([])
-    const {readyState} = useWebSocket(url, {onMessage: (e) => {
+    const [msgLog, setMsgLog] = useState<string[]>(["test"])
+    const {readyState, sendMessage} = useWebSocket(url, {onMessage: (e) => {
         if (typeof e.data != "string") {return}
         const msg = e.data
         setMsgLog((prev) => {
@@ -35,12 +37,22 @@ export default function  Game() {
             </Grid>
         </Box>
     </Conditional>
-    <Container maxW={"container.md"} height={"100vh"}>
-        <Box height={"80%"}>
-        Connect code: {params.get("gameId")}
-        {msgLog.map((v, i) => <Text key={i} >{v}</Text>)}
-        </Box>
-        <Box height={"20%"}>A</Box>
+    <Box bgGradient={"linear(to-t, gray.50, gray.500)"}>
+    <Container maxW={"container.md"} bgGradient={"linear(to-tr, blue.50, cyan.500)"}>
+        <Flex flexFlow={"column"} height={"100vh"}>
+            <Box flexGrow={1} flexShrink={1} overflow={"auto"} background={"blackAlpha.200"}>
+                <Text fontWeight={"bold"}>Connect code: {params.get("gameId")}</Text>
+                {msgLog.map((v, i) => <Text key={i} >{v}</Text>)}
+            </Box>
+            <Box>
+                <Flex justifyContent={"space-around"} >
+                    <MoveButton disabled={readyState != WebSocket.OPEN || disabled} onClick={() => {sendMessage("r") ; setDisabled(true)}} heigth={120} variant="rock"/>
+                    <MoveButton disabled={readyState != WebSocket.OPEN || disabled} onClick={() => {sendMessage("p") ; setDisabled(true)}} heigth={120} variant="paper"/>
+                    <MoveButton disabled={readyState != WebSocket.OPEN || disabled} onClick={() => {sendMessage("s") ; setDisabled(true)}} heigth={120} variant="scissors"/>
+                </Flex>
+            </Box>
+        </Flex>
     </Container>
+    </Box>
     </>
 }
